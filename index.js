@@ -6,6 +6,7 @@ jsonWorker.addEventListener("message", (event) => {
   console.log("On worker thread: ", event.data);
 })
 
+const timeParallelStart = Date.now();
 // Now we do the calculation for parsing the JSON file on the main thread.
 performanceMarkersMain = [];
 performanceMarkersMain.push(Date.now());
@@ -17,3 +18,11 @@ console.log("On main thread: ", performanceMarkersMain[1] - performanceMarkersMa
 // Try to use transferable objects to reduce the overhead of cloning
 const message = {str: largeJSON};
 jsonWorker.postMessage(message);
+const timeParallelEnd = Date.now();
+
+const timeSingleStart = Date.now();
+JSON.parse(largeJSON);
+JSON.parse(largeJSON);
+const timeSingleEnd = Date.now();
+console.log("Parallel: ", timeParallelEnd - timeParallelStart);
+console.log("Single threaded: ", timeSingleEnd - timeSingleStart);
